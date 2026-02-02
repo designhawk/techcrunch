@@ -12,9 +12,20 @@ from storage import StorageManager, DailyDigest
 def load_config(config_path: str = None) -> dict:
     """Load configuration from YAML file"""
     if config_path is None:
-        # Find config.yaml relative to this script
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        config_path = os.path.join(script_dir, 'config.yaml')
+        # Check multiple possible locations
+        possible_paths = [
+            'config.yaml',
+            os.path.join(os.getcwd(), 'config.yaml'),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.yaml'),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.yaml'),
+        ]
+        for path in possible_paths:
+            if os.path.exists(path):
+                config_path = path
+                break
+        else:
+            print(f"Warning: config.yaml not found in: {possible_paths}")
+            return {}
 
     try:
         with open(config_path, 'r') as f:

@@ -19,7 +19,12 @@ class StorageManager:
     def __init__(self, data_dir: str = None):
         if data_dir is None or data_dir == "data":
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            data_dir = os.path.join(script_dir, 'data')
+            # Check if data dir exists relative to script, otherwise use cwd
+            script_data = os.path.join(script_dir, 'data')
+            if os.path.exists(script_data):
+                data_dir = script_data
+            else:
+                data_dir = os.path.join(os.getcwd(), 'data')
         elif not os.path.isabs(data_dir):
             script_dir = os.path.dirname(os.path.abspath(__file__))
             data_dir = os.path.join(script_dir, data_dir)
