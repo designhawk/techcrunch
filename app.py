@@ -42,6 +42,9 @@ def create_daily_digest():
     # Support both config file and environment variable
     openrouter_key = os.environ.get('OPENROUTER_API_KEY', config.get('openrouter_api_key', ''))
 
+    if not openrouter_key:
+        print("[ERROR] No OpenRouter API key found. Set OPENROUTER_API_KEY env var in Render.")
+
     parser = RSSParser(rss_url)
     articles = parser.parse_articles(limit=15)
     feed_info = parser.get_feed_info()
