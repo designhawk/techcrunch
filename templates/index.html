@@ -396,31 +396,31 @@
                         <p class="card__summary">{{ article.summary[:180] }}…</p>
 
                         {# Find matching insight using fuzzy title matching #}
-                        {% set matched_insight = false %}
+                        {% set ns = namespace(matched=false) %}
                         {% for insight_item in digest.insights %}
                             {% if article.title.lower() in insight_item.title.lower() or insight_item.title.lower() in article.title.lower() %}
-                                {% set matched_insight = insight_item %}
+                                {% set ns.matched = insight_item %}
                             {% endif %}
                         {% endfor %}
 
-                        {% if matched_insight %}
+                        {% if ns.matched %}
                         <section class="insights" aria-labelledby="insights-{{ loop.index }}">
                             <h4 id="insights-{{ loop.index }}" class="insights__heading">Key Insights</h4>
                             <ul class="insights__list">
-                                {% for takeaway in matched_insight.key_takeaways[:3] %}
+                                {% for takeaway in ns.matched.key_takeaways[:3] %}
                                 <li>{{ takeaway }}</li>
                                 {% endfor %}
                             </ul>
-                            {% if matched_insight.impact_analysis %}
-                            <p class="insights__note">{{ matched_insight.impact_analysis }}</p>
+                            {% if ns.matched.impact_analysis %}
+                            <p class="insights__note">{{ ns.matched.impact_analysis }}</p>
                             {% endif %}
                             <div class="insights__meta">
-                                <span class="sentiment sentiment--{{ matched_insight.sentiment }}">{{ matched_insight.sentiment }}</span>
-                                <span class="read-time">{{ matched_insight.read_time_estimate }} read</span>
+                                <span class="sentiment sentiment--{{ ns.matched.sentiment }}">{{ ns.matched.sentiment }}</span>
+                                <span class="read-time">{{ ns.matched.read_time_estimate }} read</span>
                             </div>
-                            {% if matched_insight.related_tech %}
+                            {% if ns.matched.related_tech %}
                             <div style="margin-top: 10px;">
-                                {% for tech in matched_insight.related_tech[:4] %}
+                                {% for tech in ns.matched.related_tech[:4] %}
                                 <span class="tag tag--highlight">{{ tech }}</span>
                                 {% endfor %}
                             </div>

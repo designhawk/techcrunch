@@ -1,7 +1,6 @@
 """TechCrunch Daily Digest Web Application"""
 import yaml
 import os
-import hashlib
 from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
@@ -112,6 +111,11 @@ def index():
     """Main page - show latest digest"""
     latest = storage.get_latest_digest()
     if latest:
+        print(f"[DEBUG] Latest digest date: {latest.date}")
+        print(f"[DEBUG] Articles count: {len(latest.articles)}")
+        print(f"[DEBUG] Insights count: {len(latest.insights)}")
+        if latest.insights:
+            print(f"[DEBUG] First insight: {latest.insights[0]}")
         return render_template('index.html', digest=latest)
     return render_template('no_digest.html')
 
