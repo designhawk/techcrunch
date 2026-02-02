@@ -1,0 +1,36 @@
+# Dependencies
+venv/
+.venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+data/*.json
+!data/.gitkeep
+
+# Config (contains secrets)
+config.yaml
+*.pem
+*.key
+
+# Cache
+.cache/
+.ruff_cache/
+.mypy_cache/

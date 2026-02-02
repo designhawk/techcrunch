@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "templates/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/digests",
+      "dest": "/digests.html"
+    },
+    {
+      "src": "/digest/(.+)",
+      "dest": "/digest_$1.html"
+    },
+    {
+      "src": "/api/(.+)",
+      "src": "api/$1"
+    },
+    {
+      "src": "/generate",
+      "dest": "api/generate.py"
+    },
+    {
+      "src": "/health",
+      "dest": "api/health.py"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": "."
+  }
+}
