@@ -1,4 +1,4 @@
-"""AI Insights Generator using OpenRouter API"""
+"""AI Insights Generator using OpenRouter API with Mistral fallback"""
 import os
 import requests
 from typing import List
@@ -20,12 +20,18 @@ class ArticleInsight:
 class OpenRouterInsightsGenerator:
     def __init__(self, api_key: str):
         self.api_key = api_key
+        self.mistral_key = os.environ.get('MISTRAL_API_KEY', '')
         self.url = "https://openrouter.ai/api/v1/chat/completions"
+        self.mistral_url = "https://api.mistral.ai/v1/chat/completions"
         self.headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
             "HTTP-Referer": os.environ.get("HTTP_REFERER", "http://localhost:5000"),
             "X-Title": "TechCrunch Digest"
+        }
+        self.mistral_headers = {
+            "Authorization": f"Bearer {self.mistral_key}",
+            "Content-Type": "application/json"
         }
 
     def generate_insight(self, article: dict) -> ArticleInsight:
@@ -51,9 +57,9 @@ Output JSON with:
 }}
 """
 
+        # Try OpenRouter first
         try:
             print(f"[DEBUG] Calling OpenRouter for: {title[:50]}...")
-            print(f"[DEBUG] Headers: {self.headers}")
             response = requests.post(
                 self.url,
                 headers=self.headers,
@@ -65,16 +71,53 @@ Output JSON with:
                 timeout=60
             )
             print(f"[DEBUG] Response status: {response.status_code}")
+            
+            if response.status_code == 429:
+                print(f"[WARN] OpenRouter rate limited, trying Mistral...")
+                return self._call_mistral(prompt, title, article)
+            
             response.raise_for_status()
             data = response.json()
             content = data["choices"][0]["message"]["content"]
             print(f"OpenRouter response for: {title[:30]}...")
             return self._parse_response(content, title)
+            
         except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                print(f"[WARN] OpenRouter rate limited, trying Mistral...")
+                return self._call_mistral(prompt, title, article)
             print(f"[ERROR] HTTP error: {e.response.status_code} - {e.response.text}")
             return self._create_fallback_insight(article)
         except Exception as e:
             print(f"[ERROR] OpenRouter error: {type(e).__name__}: {e}")
+            return self._create_fallback_insight(article)
+
+    def _call_mistral(self, prompt: str, title: str, article: dict) -> ArticleInsight:
+        """Call Mistral API as fallback"""
+        if not self.mistral_key:
+            print(f"[WARN] No MISTRAL_API_KEY set, using fallback")
+            return self._create_fallback_insight(article)
+        
+        try:
+            print(f"[DEBUG] Calling Mistral for: {title[:50]}...")
+            response = requests.post(
+                self.mistral_url,
+                headers=self.mistral_headers,
+                json={
+                    "model": "mistral-small-latest",
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.3
+                },
+                timeout=60
+            )
+            print(f"[DEBUG] Mistral response status: {response.status_code}")
+            response.raise_for_status()
+            data = response.json()
+            content = data["choices"][0]["message"]["content"]
+            print(f"Mistral response for: {title[:30]}...")
+            return self._parse_response(content, title)
+        except Exception as e:
+            print(f"[ERROR] Mistral error: {type(e).__name__}: {e}")
             return self._create_fallback_insight(article)
 
     def generate_batch_insights(self, articles: List[dict]) -> List[ArticleInsight]:
