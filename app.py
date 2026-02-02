@@ -143,6 +143,15 @@ def api_status():
     return jsonify(generation_status)
 
 
+@app.route('/api/digest/<date>')
+def api_digest(date):
+    """API endpoint for digest data"""
+    digest = storage.load_digest(date)
+    if digest:
+        return jsonify(asdict(digest))
+    return jsonify({'error': 'Digest not found'}), 404
+
+
 @app.route('/stats')
 def stats():
     """Storage statistics"""
