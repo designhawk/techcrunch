@@ -4,21 +4,232 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>No Digest - TechCrunch Daily</title>
+    <meta name="theme-color" content="#161616">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --carbon-bg-primary: #161616;
+            --carbon-bg-secondary: #262626;
+            --carbon-bg-tertiary: #393939;
+            --carbon-text-primary: #f4f4f4;
+            --carbon-text-secondary: #a8a8a8;
+            --carbon-border-subtle: #393939;
+            --carbon-border-strong: #525252;
+            --carbon-accent: #78a9ff;
+            --carbon-success: #24a148;
+        }
+
+        html { color-scheme: dark; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 60px 20px; text-align: center; }
-        h1 { color: #0a9a5d; margin-bottom: 20px; }
-        p { color: #666; margin-bottom: 20px; }
-        .btn { display: inline-block; background: #0a9a5d; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; transition: 0.2s; }
-        .btn:hover { background: #087f4a; }
+
+        body {
+            background: var(--carbon-bg-primary);
+            color: var(--carbon-text-primary);
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--carbon-accent);
+            color: var(--carbon-bg-primary);
+            padding: 8px 16px;
+            z-index: 1000;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus { top: 0; }
+
+        *:focus-visible {
+            outline: 2px solid var(--carbon-accent);
+            outline-offset: 2px;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+
+        header {
+            background: var(--carbon-bg-secondary);
+            border-bottom: 1px solid var(--carbon-border-subtle);
+            padding: 20px 0;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--carbon-text-primary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--carbon-bg-primary);
+            font-size: 0.875rem;
+        }
+
+        .brand-info h1 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: -0.25px;
+        }
+
+        .brand-info p {
+            font-size: 0.75rem;
+            color: var(--carbon-text-secondary);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            fill: var(--carbon-text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: var(--carbon-text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+        }
+
+        .btn--success {
+            background: var(--carbon-success);
+            color: white;
+        }
+
+        .btn--success:hover {
+            background: #2d9658;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 32px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--carbon-border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
+
+        .status-item svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--carbon-text-helper);
+        }
+
+        .status-item strong {
+            color: var(--carbon-text-primary);
+            font-weight: 500;
+        }
+
+        .status-item span {
+            color: var(--carbon-text-secondary);
+        }
+
+        footer {
+            border-top: 1px solid var(--carbon-border-subtle);
+            padding: 24px 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.875rem;
+            color: var(--carbon-text-helper);
+        }
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header role="banner">
+        <div class="container">
+            <div class="header-inner">
+                <div class="brand-icon" aria-hidden="true">TC</div>
+                <div class="brand-info">
+                    <h1>TechCrunch Daily</h1>
+                    <p>AI-powered news digest</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <h1>📰 No Digest Available</h1>
-        <p>Generate your first TechCrunch daily digest with AI insights.</p>
-        <a href="/generate" class="btn">Generate Now</a>
+        <div class="status-bar" role="status" aria-live="polite">
+            <div class="status-item">
+                <svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>
+                <span>Status:</span>
+                <strong>No digest yet</strong>
+            </div>
+        </div>
     </div>
+
+    <main id="main-content" role="main">
+        <div class="container">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l4.59-4.58L18 11l-6 6z"/>
+                </svg>
+                <h2>No Digest Available</h2>
+                <p>Generate your first TechCrunch daily digest with AI-powered insights.</p>
+                <a href="/generate" class="btn btn--success">Generate Now</a>
+            </div>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p>TechCrunch Daily Digest</p>
+        </div>
+    </footer>
 </body>
 </html>
