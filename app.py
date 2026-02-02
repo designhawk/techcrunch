@@ -9,13 +9,18 @@ from openrouter_insights import OpenRouterInsightsGenerator
 from storage import StorageManager, DailyDigest
 
 
-def load_config(config_path: str = "config.yaml") -> dict:
+def load_config(config_path: str = None) -> dict:
     """Load configuration from YAML file"""
+    if config_path is None:
+        # Find config.yaml relative to this script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(script_dir, 'config.yaml')
+
     try:
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
     except Exception as e:
-        print(f"Warning: Could not load config: {e}")
+        print(f"Warning: Could not load config from {config_path}: {e}")
         return {}
 
 

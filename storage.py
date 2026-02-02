@@ -16,11 +16,15 @@ class DailyDigest:
 
 
 class StorageManager:
-    def __init__(self, data_dir: str = "data"):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        if not os.path.isabs(data_dir):
+    def __init__(self, data_dir: str = None):
+        if data_dir is None or data_dir == "data":
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            data_dir = os.path.join(script_dir, 'data')
+        elif not os.path.isabs(data_dir):
+            script_dir = os.path.dirname(os.path.abspath(__file__))
             data_dir = os.path.join(script_dir, data_dir)
         self.data_dir = data_dir
+        self._ensure_data_dir()
         self._ensure_data_dir()
 
     def _ensure_data_dir(self):
