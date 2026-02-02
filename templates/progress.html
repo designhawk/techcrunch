@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generating Digest... - TechCrunch Daily</title>
-    <meta name="theme-color" content="#0d1117">
+    <meta name="theme-color" content="#161616">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --text-dim: #6e7681;
-            --accent: #58a6ff;
-            --success: #3fb950;
-            --warning: #d29922;
-            --error: #f85149;
-            --border: #30363d;
+            --bg-primary: #161616;
+            --bg-secondary: #262626;
+            --bg-tertiary: #393939;
+            --text-primary: #f4f4f4;
+            --text-secondary: #a8a8a8;
+            --text-helper: #6f6f6f;
+            --border-subtle: #393939;
+            --border-strong: #525252;
+            --accent: #78a9ff;
+            --accent-hover: #4589ff;
+            --success: #24a148;
+            --warning: #f1c21b;
+            --error: #da1e28;
         }
 
         html { color-scheme: dark; }
@@ -30,8 +32,10 @@
         body {
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-family: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 400;
             min-height: 100vh;
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -39,16 +43,19 @@
 
         header {
             background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-subtle);
             padding: 20px 0;
             position: sticky;
             top: 0;
+            z-index: 100;
         }
 
         .header-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .brand {
@@ -73,6 +80,7 @@
         .brand-info h1 {
             font-size: 1.125rem;
             font-weight: 600;
+            letter-spacing: -0.25px;
         }
 
         .brand-info p {
@@ -86,6 +94,7 @@
             gap: 8px;
             padding: 6px 12px;
             background: var(--bg-tertiary);
+            border: 1px solid var(--border-strong);
             border-radius: 20px;
             font-size: 0.8125rem;
         }
@@ -93,7 +102,7 @@
         .spinner {
             width: 14px;
             height: 14px;
-            border: 2px solid var(--text-dim);
+            border: 2px solid var(--text-helper);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -107,8 +116,8 @@
 
         .progress-container {
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
             overflow: hidden;
         }
 
@@ -147,12 +156,12 @@
         }
 
         .log-time {
-            color: var(--text-dim);
-            min-width: 80px;
+            color: var(--text-helper);
+            min-width: 70px;
         }
 
         .log-type {
-            min-width: 20px;
+            min-width: 45px;
             font-weight: 500;
         }
 
@@ -160,7 +169,7 @@
         .log-type.success { color: var(--success); }
         .log-type.warning { color: var(--warning); }
         .log-type.error { color: var(--error); }
-        .log-type.debug { color: var(--text-dim); }
+        .log-type.debug { color: var(--text-helper); }
 
         .log-message {
             color: var(--text-primary);
@@ -176,8 +185,8 @@
 
         .stat-card {
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
             padding: 16px;
             text-align: center;
         }
@@ -199,36 +208,50 @@
             display: flex;
             gap: 12px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
-            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 4px;
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s ease;
-            border: none;
+            border: 1px solid var(--border-strong);
             font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
         .btn--primary {
-            background: var(--accent);
-            color: var(--bg-primary);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
 
-        .btn--primary:hover { background: #79b8ff; }
+        .btn--primary:hover {
+            background: var(--border-strong);
+            border-color: var(--accent);
+        }
 
         .btn--secondary {
             background: var(--bg-tertiary);
             color: var(--text-primary);
-            border: 1px solid var(--border);
         }
 
-        .btn--secondary:hover { background: var(--bg-secondary); }
+        .btn--secondary:hover {
+            background: var(--border-strong);
+        }
 
         footer {
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border-subtle);
             padding: 24px 0;
             margin-top: 40px;
             text-align: center;
@@ -236,7 +259,7 @@
 
         footer p {
             font-size: 0.875rem;
-            color: var(--text-dim);
+            color: var(--text-helper);
         }
 
         .complete-message {
@@ -252,7 +275,7 @@
         .complete-icon {
             width: 64px;
             height: 64px;
-            background: rgba(63, 185, 80, 0.2);
+            background: rgba(36, 161, 72, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -274,6 +297,7 @@
         @media (max-width: 600px) {
             .stats { grid-template-columns: 1fr; }
             .log-time { display: none; }
+            .header-inner { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -315,7 +339,10 @@
                 <div class="complete-icon">✓</div>
                 <h2>Digest Generated!</h2>
                 <p id="complete-text">Your TechCrunch daily digest is ready.</p>
-                <a href="/" class="btn btn--primary">View Digest</a>
+                <a href="/" class="btn btn--primary">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg>
+                    View Digest
+                </a>
             </div>
 
             <div class="stats" id="stats">
@@ -334,7 +361,10 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn--secondary" onclick="location.reload()">Generate Again</button>
+                <button class="btn btn--secondary" onclick="location.reload()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg>
+                    Generate Again
+                </button>
             </div>
         </div>
     </main>
@@ -344,17 +374,12 @@
     </footer>
 
     <script>
-        let eventSource = null;
-        let logs = [];
-        let articleCount = 0;
-        let imageCount = 0;
-        let insightCount = 0;
         let completed = false;
 
         function addLog(type, message) {
-            const console = document.getElementById('console');
+            const consoleEl = document.getElementById('console');
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
             const line = document.createElement('div');
             line.className = 'log-line';
@@ -364,10 +389,8 @@
                 <span class="log-message">${escapeHtml(message)}</span>
             `;
 
-            console.appendChild(line);
-            console.scrollTop = console.scrollHeight;
-
-            logs.push({ type, message, time: timeStr });
+            consoleEl.appendChild(line);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
         function escapeHtml(text) {
@@ -376,16 +399,14 @@
             return div.innerHTML;
         }
 
-        function updateStats() {
+        function updateStats(articleCount, imageCount, insightCount) {
             document.getElementById('stat-articles').textContent = articleCount;
             document.getElementById('stat-images').textContent = imageCount;
             document.getElementById('stat-insights').textContent = insightCount;
         }
 
-        function updateProgress() {
-            let total = articleCount + imageCount + insightCount;
-            let max = 45; // 15 articles * 3 steps
-            let percent = Math.min((total / max) * 100, 100);
+        function updateProgress(total, max = 45) {
+            const percent = Math.min((total / max) * 100, 100);
             document.getElementById('progress-fill').style.width = percent + '%';
         }
 
@@ -404,7 +425,7 @@
         }
 
         // Set start time
-        document.getElementById('start-time').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('start-time').textContent = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
 
         // Start generation
         async function startGeneration() {
@@ -412,10 +433,7 @@
                 addLog('info', 'Starting digest generation...');
                 addLog('info', 'Fetching RSS feed from TechCrunch...');
 
-                // Start generation in background
-                fetch('/generate', { method: 'POST' }).then(() => {
-                    // Will complete via polling
-                }).catch(err => {
+                fetch('/generate', { method: 'POST' }).catch(err => {
                     addLog('error', 'Failed to start: ' + err.message);
                 });
             } catch (error) {
@@ -428,6 +446,10 @@
         // Simulate real-time updates
         async function pollForUpdates() {
             let pollCount = 0;
+            let articleCount = 0;
+            let imageCount = 0;
+            let insightCount = 0;
+
             const pollInterval = setInterval(async () => {
                 if (completed || pollCount > 120) {
                     if (!completed) {
@@ -438,14 +460,12 @@
                 }
 
                 try {
-                    // Check if digest was created
                     const latest = await fetch('/api/status').then(r => r.json());
 
                     if (latest.complete && !latest.running) {
                         markComplete();
                         clearInterval(pollInterval);
 
-                        // Get actual counts from storage
                         const storage = await fetch('/stats').then(r => r.json());
                         if (storage.latest_date) {
                             const digest = await fetch(`/api/digest/${storage.latest_date}`).then(r => r.json());
@@ -453,32 +473,32 @@
                                 articleCount = digest.articles.length;
                                 imageCount = digest.articles.filter(a => a.image_url).length;
                                 insightCount = digest.insights.filter(i => !i.key_takeaways[0].startsWith('Add OpenRouter') && !i.key_takeaways[0].startsWith('Category:')).length;
-                                updateStats();
+                                updateStats(articleCount, imageCount, insightCount);
                             }
                         }
                         return;
                     }
 
-                    // Just increment for visual feedback since we can't easily track steps
+                    // Visual feedback for progress
                     if (pollCount % 3 === 0 && articleCount < 15) {
                         articleCount = Math.min(articleCount + 3, 15);
                         addLog('info', `Fetching articles... ${articleCount}/15`);
-                        updateStats();
-                        updateProgress();
+                        updateStats(articleCount, imageCount, insightCount);
+                        updateProgress(articleCount + imageCount + insightCount);
                     }
 
                     if (pollCount % 6 === 0 && imageCount < articleCount) {
                         imageCount = Math.min(imageCount + 3, articleCount);
                         addLog('debug', `Found ${imageCount} images`);
-                        updateStats();
-                        updateProgress();
+                        updateStats(articleCount, imageCount, insightCount);
+                        updateProgress(articleCount + imageCount + insightCount);
                     }
 
                     if (pollCount % 8 === 0 && insightCount < articleCount) {
                         insightCount = Math.min(insightCount + 2, articleCount);
                         addLog('info', `Generating AI insights... ${insightCount}/${articleCount}`);
-                        updateStats();
-                        updateProgress();
+                        updateStats(articleCount, imageCount, insightCount);
+                        updateProgress(articleCount + imageCount + insightCount);
                     }
                 } catch (e) {
                     // Ignore polling errors

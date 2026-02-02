@@ -81,19 +81,40 @@
             align-items: center;
             gap: 8px;
             padding: 8px 16px;
-            background: var(--carbon-accent);
-            color: var(--carbon-bg-primary);
-            border: none;
+            background: var(--carbon-bg-tertiary);
+            color: var(--carbon-text-primary);
+            border: 1px solid var(--carbon-border-strong);
             border-radius: 4px;
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: all 0.15s ease;
         }
 
-        .btn-refresh:hover { background: var(--carbon-accent-hover); }
-        .btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-refresh svg { width: 16px; height: 16px; }
+        .btn-refresh:hover {
+            background: var(--carbon-border-strong);
+            border-color: var(--carbon-accent);
+        }
+
+        .btn-refresh:focus-visible {
+            outline: 2px solid var(--carbon-accent);
+            outline-offset: 2px;
+        }
+
+        .btn-refresh:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-refresh svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .btn-refresh.spinning svg {
+            animation: spin 1s linear infinite;
+        }
 
         .brand { display: flex; align-items: center; gap: 12px; }
 
