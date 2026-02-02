@@ -1,12 +1,18 @@
 """TechCrunch Daily Digest Web Application"""
 import yaml
 import os
+import hashlib
 from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 
 from rss_parser import RSSParser
 from openrouter_insights import OpenRouterInsightsGenerator
 from storage import StorageManager, DailyDigest
+
+
+def normalize_title(title: str) -> str:
+    """Normalize title for matching - remove extra whitespace and lowercase"""
+    return ' '.join(title.lower().split())
 
 
 def load_config(config_path: str = None) -> dict:

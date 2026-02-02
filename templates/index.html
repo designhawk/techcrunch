@@ -39,7 +39,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Skip link for accessibility */
         .skip-link {
             position: absolute;
             top: -40px;
@@ -53,7 +52,6 @@
 
         .skip-link:focus { top: 0; }
 
-        /* Focus visible - never remove outline without replacement */
         *:focus-visible {
             outline: 2px solid var(--carbon-accent);
             outline-offset: 2px;
@@ -102,51 +100,6 @@
         .brand-info p {
             font-size: 0.75rem;
             color: var(--carbon-text-secondary);
-        }
-
-        .header-actions { display: flex; gap: 8px; align-items: center; }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            border: none;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn--tertiary {
-            background: transparent;
-            color: var(--carbon-text-secondary);
-            border: 1px solid var(--carbon-border-strong);
-        }
-
-        .btn--tertiary:hover:not(:disabled) {
-            background: var(--carbon-bg-tertiary);
-            color: var(--carbon-text-primary);
-        }
-
-        .btn--tertiary:active:not(:disabled) {
-            background: var(--carbon-border-strong);
-        }
-
-        .btn--success {
-            background: var(--carbon-success);
-            color: white;
-        }
-
-        .btn--success:hover:not(:disabled) {
-            background: #2d9658;
         }
 
         .status-bar {
@@ -442,32 +395,38 @@
 
                         <p class="card__summary">{{ article.summary[:180] }}…</p>
 
-                        {% for insight in digest.insights %}
-                        {% if insight.title == article.title %}
+                        {# Find matching insight using fuzzy title matching #}
+                        {% set matched_insight = false %}
+                        {% for insight_item in digest.insights %}
+                            {% if article.title.lower() in insight_item.title.lower() or insight_item.title.lower() in article.title.lower() %}
+                                {% set matched_insight = insight_item %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if matched_insight %}
                         <section class="insights" aria-labelledby="insights-{{ loop.index }}">
                             <h4 id="insights-{{ loop.index }}" class="insights__heading">Key Insights</h4>
                             <ul class="insights__list">
-                                {% for takeaway in insight.key_takeaways[:3] %}
+                                {% for takeaway in matched_insight.key_takeaways[:3] %}
                                 <li>{{ takeaway }}</li>
                                 {% endfor %}
                             </ul>
-                            {% if insight.impact_analysis %}
-                            <p class="insights__note">{{ insight.impact_analysis }}</p>
+                            {% if matched_insight.impact_analysis %}
+                            <p class="insights__note">{{ matched_insight.impact_analysis }}</p>
                             {% endif %}
                             <div class="insights__meta">
-                                <span class="sentiment sentiment--{{ insight.sentiment }}">{{ insight.sentiment }}</span>
-                                <span class="read-time">{{ insight.read_time_estimate }} read</span>
+                                <span class="sentiment sentiment--{{ matched_insight.sentiment }}">{{ matched_insight.sentiment }}</span>
+                                <span class="read-time">{{ matched_insight.read_time_estimate }} read</span>
                             </div>
-                            {% if insight.related_tech %}
+                            {% if matched_insight.related_tech %}
                             <div style="margin-top: 10px;">
-                                {% for tech in insight.related_tech[:4] %}
+                                {% for tech in matched_insight.related_tech[:4] %}
                                 <span class="tag tag--highlight">{{ tech }}</span>
                                 {% endfor %}
                             </div>
                             {% endif %}
                         </section>
                         {% endif %}
-                        {% endfor %}
 
                         {% if article.categories %}
                         <div style="margin-top: 12px;">

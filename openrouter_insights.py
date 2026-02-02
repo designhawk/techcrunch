@@ -1,4 +1,5 @@
 """AI Insights Generator using OpenRouter API"""
+import os
 import requests
 from typing import List
 from dataclasses import dataclass
@@ -23,7 +24,7 @@ class OpenRouterInsightsGenerator:
         self.headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "http://localhost:5000",
+            "HTTP-Referer": os.environ.get("HTTP_REFERER", "http://localhost:5000"),
             "X-Title": "TechCrunch Digest"
         }
 
