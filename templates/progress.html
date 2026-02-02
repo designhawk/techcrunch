@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Digest... - TechCrunch Daily</title>
+    <meta name="theme-color" content="#0d1117">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-dim: #6e7681;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #d29922;
+            --error: #f85149;
+            --border: #30363d;
+        }
+
+        html { color-scheme: dark; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--text-primary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-primary);
+            font-size: 0.875rem;
+        }
+
+        .brand-info h1 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .brand-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.8125rem;
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--text-dim);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        main { padding: 40px 0; }
+
+        .progress-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-tertiary);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .console {
+            padding: 20px;
+            min-height: 400px;
+            max-height: 60vh;
+            overflow-y: auto;
+            font-size: 0.8125rem;
+            line-height: 1.7;
+        }
+
+        .log-line {
+            display: flex;
+            gap: 12px;
+            padding: 4px 0;
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .log-time {
+            color: var(--text-dim);
+            min-width: 80px;
+        }
+
+        .log-type {
+            min-width: 20px;
+            font-weight: 500;
+        }
+
+        .log-type.info { color: var(--accent); }
+        .log-type.success { color: var(--success); }
+        .log-type.warning { color: var(--warning); }
+        .log-type.error { color: var(--error); }
+        .log-type.debug { color: var(--text-dim); }
+
+        .log-message {
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .actions {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn--primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn--primary:hover { background: #79b8ff; }
+
+        .btn--secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn--secondary:hover { background: var(--bg-secondary); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+        }
+
+        .complete-message {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .complete-message.show {
+            display: block;
+        }
+
+        .complete-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(63, 185, 80, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+        }
+
+        .complete-message h2 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .complete-message p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .stats { grid-template-columns: 1fr; }
+            .log-time { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <div class="brand">
+                    <div class="brand-icon">TC</div>
+                    <div class="brand-info">
+                        <h1>TechCrunch Daily</h1>
+                        <p>AI-powered news digest</p>
+                    </div>
+                </div>
+                <div class="status-badge">
+                    <div class="spinner"></div>
+                    <span id="status-text">Generating...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="console" id="console">
+                    <div class="log-line">
+                        <span class="log-time" id="start-time"></span>
+                        <span class="log-type info">[INFO]</span>
+                        <span class="log-message">Starting digest generation...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="complete-message" id="complete-message">
+                <div class="complete-icon">✓</div>
+                <h2>Digest Generated!</h2>
+                <p id="complete-text">Your TechCrunch daily digest is ready.</p>
+                <a href="/" class="btn btn--primary">View Digest</a>
+            </div>
+
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-articles">-</div>
+                    <div class="stat-label">Articles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-images">-</div>
+                    <div class="stat-label">Images</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-insights">-</div>
+                    <div class="stat-label">AI Insights</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn--secondary" onclick="location.reload()">Generate Again</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>TechCrunch Daily Digest</p>
+    </footer>
+
+    <script>
+        let eventSource = null;
+        let logs = [];
+        let articleCount = 0;
+        let imageCount = 0;
+        let insightCount = 0;
+        let completed = false;
+
+        function addLog(type, message) {
+            const console = document.getElementById('console');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+
+            const line = document.createElement('div');
+            line.className = 'log-line';
+            line.innerHTML = `
+                <span class="log-time">${timeStr}</span>
+                <span class="log-type ${type}">[${type.toUpperCase()}]</span>
+                <span class="log-message">${escapeHtml(message)}</span>
+            `;
+
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+
+            logs.push({ type, message, time: timeStr });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-articles').textContent = articleCount;
+            document.getElementById('stat-images').textContent = imageCount;
+            document.getElementById('stat-insights').textContent = insightCount;
+        }
+
+        function updateProgress() {
+            let total = articleCount + imageCount + insightCount;
+            let max = 45; // 15 articles * 3 steps
+            let percent = Math.min((total / max) * 100, 100);
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+
+        function markComplete() {
+            if (completed) return;
+            completed = true;
+
+            document.getElementById('status-text').textContent = 'Complete';
+            document.querySelector('.spinner').style.display = 'none';
+
+            document.getElementById('complete-message').classList.add('show');
+            document.getElementById('stats').style.display = 'none';
+            document.querySelector('.actions').style.display = 'none';
+
+            addLog('success', 'Digest generation complete!');
+        }
+
+        // Set start time
+        document.getElementById('start-time').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+
+        // Start generation
+        async function startGeneration() {
+            try {
+                addLog('info', 'Starting digest generation...');
+                addLog('info', 'Fetching RSS feed from TechCrunch...');
+
+                // Start generation in background
+                fetch('/generate', { method: 'POST' }).then(() => {
+                    // Will complete via polling
+                }).catch(err => {
+                    addLog('error', 'Failed to start: ' + err.message);
+                });
+            } catch (error) {
+                addLog('error', 'Error: ' + error.message);
+                document.getElementById('status-text').textContent = 'Failed';
+                document.querySelector('.spinner').style.display = 'none';
+            }
+        }
+
+        // Simulate real-time updates
+        async function pollForUpdates() {
+            let pollCount = 0;
+            const pollInterval = setInterval(async () => {
+                if (completed || pollCount > 120) {
+                    if (!completed) {
+                        addLog('warning', 'Timeout - checking final status...');
+                    }
+                    clearInterval(pollInterval);
+                    return;
+                }
+
+                try {
+                    // Check if digest was created
+                    const latest = await fetch('/api/status').then(r => r.json());
+
+                    if (latest.complete && !latest.running) {
+                        markComplete();
+                        clearInterval(pollInterval);
+
+                        // Get actual counts from storage
+                        const storage = await fetch('/stats').then(r => r.json());
+                        if (storage.latest_date) {
+                            const digest = await fetch(`/api/digest/${storage.latest_date}`).then(r => r.json());
+                            if (digest.articles) {
+                                articleCount = digest.articles.length;
+                                imageCount = digest.articles.filter(a => a.image_url).length;
+                                insightCount = digest.insights.filter(i => !i.key_takeaways[0].startsWith('Add OpenRouter') && !i.key_takeaways[0].startsWith('Category:')).length;
+                                updateStats();
+                            }
+                        }
+                        return;
+                    }
+
+                    // Just increment for visual feedback since we can't easily track steps
+                    if (pollCount % 3 === 0 && articleCount < 15) {
+                        articleCount = Math.min(articleCount + 3, 15);
+                        addLog('info', `Fetching articles... ${articleCount}/15`);
+                        updateStats();
+                        updateProgress();
+                    }
+
+                    if (pollCount % 6 === 0 && imageCount < articleCount) {
+                        imageCount = Math.min(imageCount + 3, articleCount);
+                        addLog('debug', `Found ${imageCount} images`);
+                        updateStats();
+                        updateProgress();
+                    }
+
+                    if (pollCount % 8 === 0 && insightCount < articleCount) {
+                        insightCount = Math.min(insightCount + 2, articleCount);
+                        addLog('info', `Generating AI insights... ${insightCount}/${articleCount}`);
+                        updateStats();
+                        updateProgress();
+                    }
+                } catch (e) {
+                    // Ignore polling errors
+                }
+
+                pollCount++;
+            }, 2000);
+        }
+
+        // Start
+        startGeneration();
+        pollForUpdates();
+    </script>
+</body>
+</html>

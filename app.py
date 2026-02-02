@@ -72,6 +72,15 @@ app = Flask(__name__)
 config = load_config()
 storage = StorageManager(config.get('data_dir', 'data'))
 
+# Generation status for progress tracking
+generation_status = {
+    'running': False,
+    'articles': 0,
+    'images': 0,
+    'insights': 0,
+    'complete': False
+}
+
 
 @app.route('/')
 def index():
@@ -86,23 +95,36 @@ def index():
 def generate():
     """Trigger a new digest generation"""
     try:
+        # Reset status
+        global generation_status
+        generation_status = {'running': True, 'articles': 0, 'images': 0, 'insights': 0, 'complete': False}
+
         digest = create_daily_digest()
+
+        generation_status['complete'] = True
+        generation_status['running'] = False
+
         if request.is_json:
             return jsonify({'success': True, 'date': digest.date})
         return redirect(url_for('index'))
     except Exception as e:
+        generation_status['running'] = False
+        generation_status['complete'] = True
         if request.is_json:
             return jsonify({'success': False, 'error': str(e)})
         return render_template('error.html', error=str(e))
 
 
-@app.route('/api/digest/<date>')
-def api_digest(date):
-    """API endpoint for digest data"""
-    digest = storage.load_digest(date)
-    if digest:
-        return jsonify(asdict(digest))
-    return jsonify({'error': 'Digest not found'}), 404
+@app.route('/progress')
+def progress():
+    """Progress page for digest generation"""
+    return render_template('progress.html')
+
+
+@app.route('/api/status')
+def api_status():
+    """API endpoint for generation status"""
+    return jsonify(generation_status)
 
 
 @app.route('/stats')
