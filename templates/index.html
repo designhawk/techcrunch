@@ -76,6 +76,25 @@
             gap: 16px;
         }
 
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--carbon-accent);
+            color: var(--carbon-bg-primary);
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-refresh:hover { background: var(--carbon-accent-hover); }
+        .btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-refresh svg { width: 16px; height: 16px; }
+
         .brand { display: flex; align-items: center; gap: 12px; }
 
         .brand-icon {
@@ -344,9 +363,46 @@
                         <p>AI-powered news digest</p>
                     </div>
                 </div>
+                <button class="btn-refresh" onclick="refreshDigest()" id="refreshBtn">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg>
+                    Refresh
+                </button>
             </div>
         </div>
     </header>
+
+    <script>
+        function refreshDigest() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor" class="spin"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Generating...';
+            
+            fetch('/generate', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                        btn.disabled = false;
+                        btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
+                    }
+                })
+                .catch(e => {
+                    alert('Error: ' + e);
+                    btn.disabled = false;
+                    btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
+                });
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin { animation: spin 1s linear infinite; }
+    </style>
 
     <div class="container">
         <div class="status-bar" role="status" aria-live="polite">
