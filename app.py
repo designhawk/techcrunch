@@ -23,7 +23,8 @@ def create_daily_digest():
     """Create a new daily digest with articles and AI insights"""
     config = load_config()
     rss_url = config.get('rss_url', 'https://techcrunch.com/feed/')
-    openrouter_key = config.get('openrouter_api_key', '')
+    # Support both config file and environment variable
+    openrouter_key = os.environ.get('OPENROUTER_API_KEY', config.get('openrouter_api_key', ''))
 
     parser = RSSParser(rss_url)
     articles = parser.parse_articles(limit=15)
@@ -34,6 +35,7 @@ def create_daily_digest():
     insights_data = []
     if openrouter_key and not openrouter_key.startswith('YOUR_'):
         try:
+            print(f"[INFO] Using OpenRouter API key: {openrouter_key[:15]}...")
             generator = OpenRouterInsightsGenerator(openrouter_key)
             insights_data = [
                 {
