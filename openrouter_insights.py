@@ -52,6 +52,8 @@ Output JSON with:
 """
 
         try:
+            print(f"[DEBUG] Calling OpenRouter for: {title[:50]}...")
+            print(f"[DEBUG] Headers: {self.headers}")
             response = requests.post(
                 self.url,
                 headers=self.headers,
@@ -62,13 +64,17 @@ Output JSON with:
                 },
                 timeout=60
             )
+            print(f"[DEBUG] Response status: {response.status_code}")
             response.raise_for_status()
             data = response.json()
             content = data["choices"][0]["message"]["content"]
             print(f"OpenRouter response for: {title[:30]}...")
             return self._parse_response(content, title)
+        except requests.exceptions.HTTPError as e:
+            print(f"[ERROR] HTTP error: {e.response.status_code} - {e.response.text}")
+            return self._create_fallback_insight(article)
         except Exception as e:
-            print(f"OpenRouter error: {e}")
+            print(f"[ERROR] OpenRouter error: {type(e).__name__}: {e}")
             return self._create_fallback_insight(article)
 
     def generate_batch_insights(self, articles: List[dict]) -> List[ArticleInsight]:
