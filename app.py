@@ -51,7 +51,7 @@ def create_daily_digest():
         print("[ERROR] No OpenRouter API key found. Set OPENROUTER_API_KEY env var in Render.")
 
     parser = RSSParser(rss_url)
-    articles = parser.parse_articles(limit=5)  # Reduced to 5 to stay within free tier
+    articles = parser.parse_articles(limit=15)
     feed_info = parser.get_feed_info()
 
     articles_data = [a.to_dict() for a in articles]
