@@ -8,7 +8,6 @@ AI-powered daily news digest with article summaries and insights.
 - 🤖 Generates AI insights using OpenRouter (free tier)
 - 🖼️ Auto-fetches article featured images
 - 📊 Carbon Design System UI
-- 🔄 Auto-refresh via scheduled jobs
 
 ## Setup
 
@@ -36,7 +35,6 @@ Edit `config.yaml`:
 ```yaml
 openrouter_api_key: "sk-or-v1-..."  # Get from https://openrouter.ai/keys
 rss_url: "https://techcrunch.com/feed/"
-fetch_time: "08:00"  # Daily auto-refresh time
 ```
 
 ## Run Locally
@@ -82,11 +80,13 @@ techcrunch/
 ├── rss_parser.py       # RSS fetching & image extraction
 ├── openrouter_insights.py  # AI insights generation
 ├── storage.py          # JSON file storage
-├── scheduler.py        # Daily digest scheduler
 ├── config.yaml         # Configuration
 ├── requirements.txt    # Dependencies
 ├── templates/
-│   └── index.html      # Main UI
+│   ├── index.html      # Main UI
+│   ├── progress.html   # Generation progress
+│   ├── no_digest.html  # Empty state
+│   └── error.html      # Error page
 ├── data/               # Stored digests
 └── api/
     ├── generate.py     # Vercel serverless function

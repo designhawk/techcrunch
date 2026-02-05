@@ -1,0 +1,25 @@
+{
+  "name": "techcrunch-digest",
+  "version": "2024-1",
+  "v": "2024-1",
+  "workflows": [
+    {
+      "name": "Generate Digest",
+      "id": "generate-digest",
+      "trigger": {
+        "event": "app/refresh"
+      },
+      "actions": [
+        {
+          "id": "trigger-workflow",
+          "name": "Trigger GitHub Workflow",
+          "type": "function",
+          "entrypoint": "github",
+          "config": {
+            "workflow_path": ".github/workflows/generate.yml"
+          }
+        }
+      ]
+    }
+  ]
+}

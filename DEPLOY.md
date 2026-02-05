@@ -32,62 +32,11 @@
 
 ## Auto-Refresh Setup
 
-### Option A: Built-in Scheduler (Running 24/7)
-
-The app already has a scheduler. Set in `config.yaml`:
-```yaml
-fetch_time: "08:00"
-```
-
-### Option B: External Cron Job
-
-Add to your GitHub repository → Settings → Secrets:
-- `CRON_API_TOKEN`: Generate a secret token
-
-Create a workflow file `.github/workflows/refresh.yml`:
-
-```yaml
-name: Daily Refresh
-on:
-  schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:
-    inputs:
-      manual_trigger:
-        description: 'Manual trigger'
-
-jobs:
-  refresh:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-    steps:
-      - name: Call refresh API
-        run: |
-          curl -X POST https://your-app.onrender.com/generate
-```
-
-### Option C: Easy Cron Services
-
-1. https://cron-job.org (free)
-2. https://www.easycron.com (free tier)
-3. Set to call `POST https://your-app.com/generate` every 6 hours
-
-## Environment Variables for Production
-
-```bash
-# config.yaml
-host: "0.0.0.0"
-port: 5000
-debug: false  # Set to false in production
-fetch_time: "08:00"
-```
+Use cron-job.org (free) to call `POST https://your-app.com/generate` every 6 hours.
 
 ## Health Check
 
-Add endpoint for uptime monitors:
-```yaml
-# Already included /health endpoint
-```
+The app includes a `/health` endpoint for uptime monitors.
 
 ## Recommended Free Tier Hosting Comparison
 

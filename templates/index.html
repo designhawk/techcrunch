@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components/css/carbon-components.min.css">
     <style>
         :root {
             --carbon-bg-primary: #161616;
@@ -76,46 +77,6 @@
             gap: 16px;
         }
 
-        .btn-refresh {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--carbon-bg-tertiary);
-            color: var(--carbon-text-primary);
-            border: 1px solid var(--carbon-border-strong);
-            border-radius: 4px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .btn-refresh:hover {
-            background: var(--carbon-border-strong);
-            border-color: var(--carbon-accent);
-        }
-
-        .btn-refresh:focus-visible {
-            outline: 2px solid var(--carbon-accent);
-            outline-offset: 2px;
-        }
-
-        .btn-refresh:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-refresh svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        .btn-refresh.spinning svg {
-            animation: spin 1s linear infinite;
-        }
-
         .brand { display: flex; align-items: center; gap: 12px; }
 
         .brand-icon {
@@ -140,6 +101,46 @@
         .brand-info p {
             font-size: 0.75rem;
             color: var(--carbon-text-secondary);
+        }
+
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--carbon-bg-tertiary);
+            color: var(--carbon-text-primary);
+            border: 1px solid var(--carbon-border-strong);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-refresh:hover:not(:disabled) {
+            background: var(--carbon-border-strong);
+            border-color: var(--carbon-accent);
+        }
+
+        .btn-refresh:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-refresh svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .btn-refresh.spinning svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .status-bar {
@@ -174,6 +175,35 @@
 
         main { padding: 24px 0; }
 
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .loading-state p {
+            margin-top: 16px;
+            color: var(--carbon-text-secondary);
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--carbon-bg-secondary);
+            border: 1px solid var(--carbon-danger);
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .error-state h2 {
+            color: var(--carbon-danger);
+            margin-bottom: 8px;
+        }
+
+        .error-state p {
+            color: var(--carbon-text-secondary);
+            margin-bottom: 16px;
+        }
+
         .articles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -196,7 +226,7 @@
             width: 100%;
             height: 180px;
             object-fit: cover;
-            background: var(--carbon-bg-tertiary);
+            background: var(--carbon-bg-tertiary;
         }
 
         .card__header {
@@ -236,7 +266,6 @@
         }
 
         .card__title:hover { color: var(--carbon-accent); }
-        .card__title:focus-visible { outline: 2px solid var(--carbon-accent); outline-offset: 2px; }
 
         .card__meta {
             display: flex;
@@ -385,144 +414,236 @@
                     </div>
                 </div>
                 <button class="btn-refresh" onclick="refreshDigest()" id="refreshBtn">
-                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg>
+                    <svg viewBox="0 0 16 16"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg>
                     Refresh
                 </button>
             </div>
         </div>
     </header>
 
-    <script>
-        function refreshDigest() {
-            const btn = document.getElementById('refreshBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor" class="spin"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Generating...';
-            
-            fetch('/generate', { method: 'POST' })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + data.error);
-                        btn.disabled = false;
-                        btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
-                    }
-                })
-                .catch(e => {
-                    alert('Error: ' + e);
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
-                });
-        }
-    </script>
-
-    <style>
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .spin { animation: spin 1s linear infinite; }
-    </style>
-
-    <div class="container">
-        <div class="status-bar" role="status" aria-live="polite">
-            <div class="status-item">
-                <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>
-                <span>Date:</span>
-                <strong>{{ digest.date }}</strong>
-            </div>
-            <div class="status-item">
-                <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/></svg>
-                <span>Articles:</span>
-                <strong>{{ digest.articles|length }}</strong>
-            </div>
-            <div class="status-item">
-                <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 01.5.5v3h3a.5.5 0 010 1h-3v3a.5.5 0 01-1 0v-3h-3a.5.5 0 010-1h3v-3A.5.5 0 018 4z"/></svg>
-                <span>Updated:</span>
-                <strong>{{ digest.generated_at[11:16] }}</strong>
-            </div>
-        </div>
-    </div>
-
-    <main id="main-content" role="main">
+    <div id="content">
         <div class="container">
-            <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 16px;">Latest Articles</h2>
-
-            <div class="articles-grid" role="list">
-                {% for article in digest.articles %}
-                <article class="card" role="listitem">
-                    {% if article.image_url %}
-                    <img src="{{ article.image_url }}" alt="" class="card__image" loading="lazy" width="400" height="180">
-                    {% endif %}
-                    <div class="card__header">
-                        <span class="card__label">{{ article.categories[0] if article.categories else 'News' }}</span>
-                        <span class="card__number">#{{ loop.index }}</span>
-                    </div>
-                    <div class="card__content">
-                        <h3 style="font-size: 1rem; font-weight: 500; margin-bottom: 8px;">
-                            <a href="{{ article.link }}" target="_blank" class="card__title">{{ article.title }}</a>
-                        </h3>
-
-                        <div class="card__meta">
-                            <span>{{ article.author }}</span>
-                            <span>·</span>
-                            <time datetime="{{ article.published_date[:10] }}">{{ article.published_date[:10] }}</time>
-                        </div>
-
-                        <p class="card__summary">{{ article.summary[:180] }}…</p>
-
-                        {# Find matching insight using fuzzy title matching #}
-                        {% set ns = namespace(matched=false) %}
-                        {% for insight_item in digest.insights %}
-                            {% if article.title.lower() in insight_item.title.lower() or insight_item.title.lower() in article.title.lower() %}
-                                {% set ns.matched = insight_item %}
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if ns.matched %}
-                        <section class="insights" aria-labelledby="insights-{{ loop.index }}">
-                            <h4 id="insights-{{ loop.index }}" class="insights__heading">Key Insights</h4>
-                            <ul class="insights__list">
-                                {% for takeaway in ns.matched.key_takeaways[:3] %}
-                                <li>{{ takeaway }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% if ns.matched.impact_analysis %}
-                            <p class="insights__note">{{ ns.matched.impact_analysis }}</p>
-                            {% endif %}
-                            <div class="insights__meta">
-                                <span class="sentiment sentiment--{{ ns.matched.sentiment }}">{{ ns.matched.sentiment }}</span>
-                                <span class="read-time">{{ ns.matched.read_time_estimate }} read</span>
-                            </div>
-                            {% if ns.matched.related_tech %}
-                            <div style="margin-top: 10px;">
-                                {% for tech in ns.matched.related_tech[:4] %}
-                                <span class="tag tag--highlight">{{ tech }}</span>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </section>
-                        {% endif %}
-
-                        {% if article.categories %}
-                        <div style="margin-top: 12px;">
-                            {% for cat in article.categories[1:5] %}
-                            <span class="tag">{{ cat }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </article>
-                {% endfor %}
+            <div class="status-bar" role="status" aria-live="polite" id="statusBar">
+                <div class="status-item">
+                    <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>
+                    <span>Date:</span>
+                    <strong id="dateDisplay">-</strong>
+                </div>
+                <div class="status-item">
+                    <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/></svg>
+                    <span>Articles:</span>
+                    <strong id="articlesCount">-</strong>
+                </div>
+                <div class="status-item">
+                    <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 01.5.5v3h3a.5.5 0 010 1h-3v3a.5.5 0 01-1 0v-3h-3a.5.5 0 010-1h3v-3A.5.5 0 018 4z"/></svg>
+                    <span>Updated:</span>
+                    <strong id="updatedDisplay">-</strong>
+                </div>
             </div>
         </div>
-    </main>
+
+        <main id="main-content" role="main">
+            <div class="container">
+                <div id="articlesContainer"></div>
+            </div>
+        </main>
+    </div>
 
     <footer role="contentinfo">
         <div class="container">
             <p>TechCrunch Daily Digest</p>
         </div>
     </footer>
+
+    <script>
+        const GIST_RAW_URL = 'https://gist.githubusercontent.com/YOUR_GITHUB_USERNAME/GIST_ID/raw/techcrunch.json';
+        const GITHUB_USERNAME = 'YOUR_GITHUB_USERNAME';
+        const GIST_ID = 'YOUR_GIST_ID';
+
+        function normalizeTitle(title) {
+            return title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function titlesMatch(title1, title2) {
+            const norm1 = normalizeTitle(title1);
+            const norm2 = normalizeTitle(title2);
+            return norm1.includes(norm2) || norm2.includes(norm1);
+        }
+
+        function findInsight(articleTitle, insights) {
+            for (const insight of insights) {
+                if (titlesMatch(articleTitle, insight.title)) {
+                    return insight;
+                }
+            }
+            return null;
+        }
+
+        function formatDate(dateStr) {
+            try {
+                return dateStr.split('T')[0];
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function formatTime(dateStr) {
+            try {
+                return dateStr.split('T')[1].substring(0, 5);
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function renderArticle(article, index, insight) {
+            const category = article.categories?.[0] || 'News';
+            const summary = article.summary?.replace(/<[^>]*>/g, '').substring(0, 180) + '…' || '';
+
+            let insightHTML = '';
+            if (insight) {
+                const takeaways = insight.key_takeaways?.slice(0, 3).map(t => `<li>${t}</li>`).join('') || '';
+                const impact = insight.impact_analysis ? `<p class="insights__note">${insight.impact_analysis}</p>` : '';
+                const sentimentClass = `sentiment--${insight.sentiment || 'neutral'}`;
+                const sentiment = insight.sentiment || 'neutral';
+                const readTime = insight.read_time_estimate || 'medium';
+                const relatedTech = insight.related_tech?.slice(0, 4).map(t => `<span class="tag tag--highlight">${t}</span>`).join('') || '';
+
+                insightHTML = `
+                    <section class="insights" aria-labelledby="insights-${index}">
+                        <h4 id="insights-${index}" class="insights__heading">Key Insights</h4>
+                        <ul class="insights__list">${takeaways}</ul>
+                        ${impact}
+                        <div class="insights__meta">
+                            <span class="sentiment ${sentimentClass}">${sentiment}</span>
+                            <span class="read-time">${readTime} read</span>
+                        </div>
+                        ${relatedTech ? `<div style="margin-top: 10px;">${relatedTech}</div>` : ''}
+                    </section>
+                `;
+            }
+
+            const imageHTML = article.image ? `<img src="${article.image}" alt="" class="card__image" loading="lazy" width="400" height="180">` : '';
+
+            const categories = article.categories?.slice(1, 5).map(c => `<span class="tag">${c}</span>`).join('') || '';
+
+            return `
+                <article class="card" role="listitem">
+                    ${imageHTML}
+                    <div class="card__header">
+                        <span class="card__label">${category}</span>
+                        <span class="card__number">#${index + 1}</span>
+                    </div>
+                    <div class="card__content">
+                        <h3 style="font-size: 1rem; font-weight: 500; margin-bottom: 8px;">
+                            <a href="${article.link}" target="_blank" class="card__title">${article.title}</a>
+                        </h3>
+                        <div class="card__meta">
+                            <span>${article.author || ''}</span>
+                            ${article.published ? `<span>·</span><time>${article.published.substring(0, 10)}</time>` : ''}
+                        </div>
+                        <p class="card__summary">${summary}</p>
+                        ${insightHTML}
+                        ${categories ? `<div style="margin-top: 12px;">${categories}</div>` : ''}
+                    </div>
+                </article>
+            `;
+        }
+
+        async function loadDigest() {
+            try {
+                const response = await fetch(GIST_RAW_URL + '?t=' + Date.now());
+                if (!response.ok) throw new Error('Digest not available');
+
+                const digest = await response.json();
+
+                document.getElementById('dateDisplay').textContent = digest.date || '-';
+                document.getElementById('articlesCount').textContent = digest.articles?.length || 0;
+                document.getElementById('updatedDisplay').textContent = formatTime(digest.generated_at);
+
+                const container = document.getElementById('articlesContainer');
+                const articlesHTML = digest.articles?.map((article, i) => {
+                    const insight = findInsight(article.title, digest.insights || []);
+                    return renderArticle(article, i, insight);
+                }).join('') || '<p>No articles found</p>';
+
+                container.innerHTML = `<h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 16px;">Latest Articles</h2><div class="articles-grid" role="list">${articlesHTML}</div>`;
+
+            } catch (error) {
+                console.error('Failed to load digest:', error);
+                document.getElementById('articlesContainer').innerHTML = `
+                    <div class="error-state">
+                        <h2>No Digest Available</h2>
+                        <p>Click Refresh to generate the latest digest.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function refreshDigest() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 16 16" class="spinning"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Generating...';
+
+            try {
+                const response = await fetch('/api/trigger', { method: 'POST' });
+                if (!response.ok) throw new Error('Failed to trigger generation');
+
+                await pollForCompletion();
+            } catch (error) {
+                console.error('Refresh failed:', error);
+                document.getElementById('articlesContainer').innerHTML = `
+                    <div class="error-state">
+                        <h2>Error</h2>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                btn.disabled = false;
+                btn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
+            }
+        }
+
+        async function pollForCompletion() {
+            const btn = document.getElementById('refreshBtn');
+            const container = document.getElementById('articlesContainer');
+
+            container.innerHTML = `
+                <div class="loading-state">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="20" stroke="#393939" stroke-width="4"/>
+                        <circle cx="24" cy="24" r="20" stroke="#78a9ff" stroke-width="4" stroke-dasharray="126" stroke-linecap="round" class-circle="loading"/>
+                    </svg>
+                    <p>Generating digest... This may take 30-60 seconds.</p>
+                </div>
+            `;
+
+            const MAX_ATTEMPTS = 60;
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                await new Promise(r => setTimeout(r, 3000));
+                try {
+                    const response = await fetch(GIST_RAW_URL + '?t=' + Date.now());
+                    if (response.ok) {
+                        await loadDigest();
+                        btn.disabled = false;
+                        btn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Refresh';
+                        return;
+                    }
+                } catch (e) {
+                    // Continue polling
+                }
+            }
+
+            container.innerHTML = `
+                <div class="error-state">
+                    <h2>Timeout</h2>
+                    <p>Generation took too long. Try again.</p>
+                </div>
+            `;
+            btn.disabled = false;
+            btn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M13.65 2.35A8 8 0 1016 8h-2a6 6 0 11-1.76-4.24L10 6h6V0l-2.35 2.35z"/></svg> Retry';
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', refreshDigest);
+        loadDigest();
+    </script>
 </body>
 </html>
